@@ -53,6 +53,9 @@ class MultiSlider {
      */
     public function init() {
         $this->create_database_tables();
+        // Handle slider and slide deletions
+        $this->handle_slider_deletion();
+        $this->handle_slide_deletion();
     }
 
     /**
@@ -285,9 +288,7 @@ class MultiSlider {
         }
     }
 
-    /**
-     * Render list of existing sliders and their slides
-     */
+    
     private function render_existing_sliders() {
         global $wpdb;
         $sliders = $wpdb->get_results(
@@ -298,13 +299,13 @@ class MultiSlider {
              GROUP BY s.id
              ORDER BY s.created_at DESC"
         );
-        
+
         if ($sliders) {
             echo '<h2>Existing Sliders</h2>';
             echo '<table class="wp-list-table widefat fixed striped">';
             echo '<thead><tr><th>Title</th><th>Slug</th><th>Slides</th><th>Shortcode</th><th>Actions</th></tr></thead>';
             echo '<tbody>';
-            
+
             foreach ($sliders as $slider) {
                 // Fetch slides for this slider
                 $slides = $wpdb->get_results(
@@ -321,7 +322,7 @@ class MultiSlider {
                 echo '<td><code>[multi_slider id="' . esc_html($slider->slug) . '"]</code></td>';
                 echo '<td>
                     <a href="?page=multi-slider&action=edit&id=' . intval($slider->id) . '">Edit</a> | 
-                    <a href="?page=multi-slider&action=delete&id=' . intval($slider->id) . '">Delete</a>
+                    <a href="?page=multi-slider&action=delete_slider&id=' . intval($slider->id) . '" onclick="return confirm(\'Are you sure you want to delete this slider?\');">Delete Slider</a>
                 </td>';
                 echo '</tr>';
 
@@ -335,15 +336,59 @@ class MultiSlider {
                         echo $image_url 
                             ? ' <img src="' . esc_url($image_url[0]) . '" width="50">' 
                             : '';
+                        echo ' | <a href="?page=multi-slider&action=delete_slide&id=' . intval($slide->id) . '" onclick="return confirm(\'Are you sure you want to delete this slide?\');">Delete Slide</a>';
                         echo '</td>';
                         echo '</tr>';
                     }
                 }
             }
-            
+
             echo '</tbody></table>';
         }
     }
+public function handle_slider_deletion() {
+    global $wpdb;
+
+    if (isset($_GET['action']) && $_GET['action'] === 'delete_slider' && isset($_GET['id'])) {
+        $slider_id = intval($_GET['id']);
+
+        // Delete all slides for this slider first (cascade delete)
+        $wpdb->delete(
+            $this->slides_table,
+            ['slider_id' => $slider_id]
+        );
+
+        // Now delete the slider itself
+        $wpdb->delete(
+            $this->sliders_table,
+            ['id' => $slider_id]
+        );
+
+        // Redirect back to the sliders page after deletion
+        wp_redirect(admin_url('admin.php?page=multi-slider'));
+        exit;
+    }
+}
+public function handle_slide_deletion() {
+    global $wpdb;
+
+    if (isset($_GET['action']) && $_GET['action'] === 'delete_slide' && isset($_GET['id'])) {
+        $slide_id = intval($_GET['id']);
+
+        // Delete the slide
+        $wpdb->delete(
+            $this->slides_table,
+            ['id' => $slide_id]
+        );
+
+        // Redirect back to the sliders page after deletion
+        wp_redirect(admin_url('admin.php?page=multi-slider'));
+        exit;
+    }
+}
+
+
+
 
     /**
      * Render slider shortcode
