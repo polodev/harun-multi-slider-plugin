@@ -139,34 +139,68 @@ class MultiSlider {
             20
         );
     }
-
     /**
-     * Render admin page for slider management
-     */
-    public function render_admin_page() {
-        // Check user capabilities
-        if (!current_user_can('manage_options')) {
-            return;
-        }
+ * Render admin page for slider management
+ */
+public function render_admin_page() {
+    // Check user capabilities
+    if (!current_user_can('manage_options')) {
+        return;
+    }
 
-        // Handle slider and slide submissions
-        $this->handle_slider_submission();
-        $this->handle_slide_submission();
+    // Handle slider and slide submissions
+    $this->handle_slider_submission();
+    $this->handle_slide_submission();
 
-        // Get existing sliders
-        global $wpdb;
-        $sliders = $wpdb->get_results("SELECT * FROM {$this->sliders_table}");
+    // Get existing sliders
+    global $wpdb;
+    $sliders = $wpdb->get_results("SELECT * FROM {$this->sliders_table}");
 
-        ?>
-        <div class="wrap">
-            <h1>Multi Slider Management</h1>
+    ?>
+    <div class="wrap">
+        <h1>
+            <a href="<?php echo admin_url('admin.php?page=multi-slider'); ?>">Multi Slider Management</a>
+        </h1>
 
-            <!-- Slider Creation Section -->
+        <!-- Slider Creation Section -->
+
+        <!-- Edit Slider Section -->
+        <?php if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])): ?>
+            <?php
+                $slider_id = intval($_GET['id']);
+                $slider = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$this->sliders_table} WHERE id = %d", $slider_id));
+            ?>
+            <div class="slider-edit-section">
+                <h2>Edit Slider</h2>
+                <form method="post" action="">
+                    <?php wp_nonce_field('multi_slider_edit_nonce', 'multi_slider_nonce'); ?>
+
+                    <table class="form-table">
+                        <tr>
+                            <th><label for="slider_title">Slider Title</label></th>
+                            <td><input type="text" name="slider_title" value="<?php echo esc_attr($slider->title); ?>" required></td>
+                        </tr>
+                        <tr>
+                            <th><label for="slider_slug">Slider Slug</label></th>
+                            <td><input type="text" name="slider_slug" value="<?php echo esc_attr($slider->slug); ?>" required></td>
+                        </tr>
+                        <tr>
+                            <th><label for="slider_description">Description</label></th>
+                            <td><textarea name="slider_description"><?php echo esc_textarea($slider->description); ?></textarea></td>
+                        </tr>
+                    </table>
+
+                    <a class="button" href="<?php echo admin_url('admin.php?page=multi-slider'); ?>">Back to Regular Page</a>
+
+                    <?php submit_button('Update Slider', 'primary', 'edit_slider'); ?>
+                </form>
+            </div>
+        <?php else: ?>
             <div class="slider-creation-section">
                 <h2>Create New Slider</h2>
                 <form method="post" action="">
                     <?php wp_nonce_field('multi_slider_create_nonce', 'multi_slider_nonce'); ?>
-                    
+
                     <table class="form-table">
                         <tr>
                             <th><label for="slider_title">Slider Title</label></th>
@@ -185,13 +219,78 @@ class MultiSlider {
                     <?php submit_button('Create Slider', 'primary', 'create_slider'); ?>
                 </form>
             </div>
+        <?php endif; ?>
 
+        <!-- Edit Slide Section -->
+        <?php if (isset($_GET['action']) && $_GET['action'] === 'edit_slide' && isset($_GET['id'])): ?>
+            <?php
+                $slide_id = intval($_GET['id']);
+                $slide = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$this->slides_table} WHERE id = %d", $slide_id));
+            ?>
+            <div class="slide-edit-section">
+                <h2>Edit Slide</h2>
+                <form method="post" action="">
+                    <?php wp_nonce_field('multi_slide_edit_nonce', 'multi_slide_nonce'); ?>
+
+                    <table class="form-table">
+                        <tr>
+                            <th><label for="slider_id">Select Slider</label></th>
+                            <td>
+                                <select name="slider_id" required>
+                                    <option value="">Choose a Slider</option>
+                                    <?php foreach ($sliders as $slider): ?>
+                                        <option value="<?php echo $slider->id; ?>" <?php selected($slide->slider_id, $slider->id); ?>>
+                                            <?php echo esc_html($slider->title); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="slide_title">Slide Title</label></th>
+                            <td><input type="text" name="slide_title" value="<?php echo esc_attr($slide->title); ?>" required></td>
+                        </tr>
+                        <tr>
+                            <th><label for="slide_id">Slide ID</label></th>
+                            <td><input type="text" name="slide_id" value="<?php echo esc_attr($slide->slide_id); ?>" required></td>
+                        </tr>
+                        <tr>
+                            <th><label for="slide_image">Slide Image</label></th>
+                            <td>
+                                <input type="hidden" name="slide_image_id" id="slide_image_id" value="<?php echo esc_attr($slide->image_id); ?>">
+                                <img id="slide_image_preview" src="<?php echo esc_url(wp_get_attachment_image_url($slide->image_id, 'thumbnail')); ?>" style="max-width: 300px; display: <?php echo $slide->image_id ? 'block' : 'none'; ?>;">
+                                <button type="button" class="button" id="upload_image_button">
+                                    Select Image
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="slide_link">Link URL</label></th>
+                            <td><input type="text" name="slide_link" value="<?php echo esc_url($slide->link_url); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="slide_description">Description</label></th>
+                            <td><textarea name="slide_description"><?php echo esc_textarea($slide->description); ?></textarea></td>
+                        </tr>
+                        <tr>
+                            <th><label for="slide_alt">Alternative Text</label></th>
+                            <td><input type="text" name="slide_alt" value="<?php echo esc_attr($slide->alt_text); ?>"></td>
+                        </tr>
+                    </table>
+
+                    <a class="button" href="<?php echo admin_url('admin.php?page=multi-slider'); ?>">Back to Regular Page</a>
+
+
+                    <?php submit_button('Update Slide', 'primary', 'edit_slide'); ?>
+                </form>
+            </div>
+        <?php else: ?>
             <!-- Slide Addition Section -->
             <div class="slide-addition-section">
                 <h2>Add Slide to Slider</h2>
                 <form method="post" action="">
                     <?php wp_nonce_field('multi_slide_create_nonce', 'multi_slide_nonce'); ?>
-                    
+
                     <table class="form-table">
                         <tr>
                             <th><label for="slider_id">Select Slider</label></th>
@@ -241,58 +340,98 @@ class MultiSlider {
                     <?php submit_button('Add Slide', 'secondary', 'create_slide'); ?>
                 </form>
             </div>
+        <?php endif; ?>
 
-            <!-- Existing Sliders and Slides List -->
-            <?php $this->render_existing_sliders(); ?>
-        </div>
-        <?php
+
+        <!-- Existing Sliders and Slides List -->
+        <?php $this->render_existing_sliders(); ?>
+    </div>
+    <?php
+}
+
+private function handle_slider_submission() {
+    global $wpdb;
+
+    // Slider Create
+    if (
+        isset($_POST['multi_slider_nonce']) &&
+        wp_verify_nonce($_POST['multi_slider_nonce'], 'multi_slider_create_nonce') &&
+        isset($_POST['create_slider'])
+    ) {
+        $data = [
+            'title' => sanitize_text_field($_POST['slider_title']),
+            'slug' => sanitize_title($_POST['slider_slug']),
+            'description' => sanitize_textarea_field($_POST['slider_description'])
+        ];
+        $wpdb->insert($this->sliders_table, $data);
     }
 
-    /**
-     * Handle slider submission
-     */
-    private function handle_slider_submission() {
-        if (
-            isset($_POST['multi_slider_nonce']) && 
-            wp_verify_nonce($_POST['multi_slider_nonce'], 'multi_slider_create_nonce') &&
-            isset($_POST['create_slider'])
-        ) {
-            global $wpdb;
-
-            $data = [
-                'title' => sanitize_text_field($_POST['slider_title']),
-                'slug' => sanitize_title($_POST['slider_slug']),
-                'description' => sanitize_textarea_field($_POST['slider_description'])
-            ];
-
-            $wpdb->insert($this->sliders_table, $data);
-        }
+    // Slider Edit
+    if (
+        isset($_POST['multi_slider_nonce']) &&
+        wp_verify_nonce($_POST['multi_slider_nonce'], 'multi_slider_edit_nonce') &&
+        isset($_POST['edit_slider']) &&
+        isset($_GET['action']) && $_GET['action'] === 'edit'
+    ) {
+        $slider_id = intval($_GET['id']);
+        $data = [
+            'title' => sanitize_text_field($_POST['slider_title']),
+            'slug' => sanitize_title($_POST['slider_slug']),
+            'description' => sanitize_textarea_field($_POST['slider_description'])
+        ];
+        $wpdb->update($this->sliders_table, $data, ['id' => $slider_id]);
     }
+}
+
 
     /**
      * Handle slide submission
      */
     private function handle_slide_submission() {
-        if (
-            isset($_POST['multi_slide_nonce']) && 
-            wp_verify_nonce($_POST['multi_slide_nonce'], 'multi_slide_create_nonce') &&
-            isset($_POST['create_slide'])
-        ) {
-            global $wpdb;
+    global $wpdb;
 
-            $data = [
-                'slider_id' => intval($_POST['slider_id']),
-                'title' => sanitize_text_field($_POST['slide_title']),
-                'slide_id' => sanitize_text_field($_POST['slide_id']),
-                'image_id' => intval($_POST['slide_image_id']),
-                'link_url' => esc_url($_POST['slide_link']),
-                'description' => sanitize_textarea_field($_POST['slide_description']),
-                'alt_text' => sanitize_text_field($_POST['slide_alt'])
-            ];
+    // Slide Create
+    if (
+        isset($_POST['multi_slide_nonce']) &&
+        wp_verify_nonce($_POST['multi_slide_nonce'], 'multi_slide_create_nonce') &&
+        isset($_POST['create_slide'])
+    ) {
+        $data = [
+            'slider_id' => intval($_POST['slider_id']),
+            'title' => sanitize_text_field($_POST['slide_title']),
+            'slide_id' => sanitize_text_field($_POST['slide_id']),
+            'image_id' => intval($_POST['slide_image_id']),
+            'link_url' => esc_url($_POST['slide_link']),
+            'description' => sanitize_textarea_field($_POST['slide_description']),
+            'alt_text' => sanitize_text_field($_POST['slide_alt'])
+        ];
 
-            $wpdb->insert($this->slides_table, $data);
-        }
+        $wpdb->insert($this->slides_table, $data);
     }
+
+    // Slide Edit
+    if (
+        isset($_POST['multi_slide_nonce']) &&
+        wp_verify_nonce($_POST['multi_slide_nonce'], 'multi_slide_edit_nonce') &&
+        isset($_POST['edit_slide']) &&
+        isset($_GET['action']) && $_GET['action'] === 'edit_slide' &&
+        isset($_GET['id'])
+    ) {
+        $slide_id = intval($_GET['id']);
+        $data = [
+            'slider_id' => intval($_POST['slider_id']),
+            'title' => sanitize_text_field($_POST['slide_title']),
+            'slide_id' => sanitize_text_field($_POST['slide_id']),
+            'image_id' => intval($_POST['slide_image_id']),
+            'link_url' => esc_url($_POST['slide_link']),
+            'description' => sanitize_textarea_field($_POST['slide_description']),
+            'alt_text' => sanitize_text_field($_POST['slide_alt'])
+        ];
+
+        $wpdb->update($this->slides_table, $data, ['id' => $slide_id]);
+    }
+}
+
 
     
     private function render_existing_sliders() {
@@ -333,7 +472,7 @@ class MultiSlider {
                 echo '</tr>';
 
                 // Optional: Display slides for each slider
-                if ($slides) {
+                 if ($slides) {
                     foreach ($slides as $slide) {
                         $image_url = wp_get_attachment_image_src($slide->image_id, 'thumbnail');
                         echo '<tr class="slide-row">';
@@ -343,7 +482,8 @@ class MultiSlider {
                         echo $image_url 
                             ? ' <img src="' . esc_url($image_url[0]) . '" width="50">' 
                             : '';
-                        echo ' | <a href="?page=multi-slider&action=delete_slide&id=' . intval($slide->id) . '" onclick="return confirm(\'Are you sure you want to delete this slide?\');">Delete Slide</a>';
+                        echo ' | <a href="?page=multi-slider&action=edit_slide&id=' . intval($slide->id) . '">Edit</a> | 
+                              <a href="?page=multi-slider&action=delete_slide&id=' . intval($slide->id) . '" onclick="return confirm(\'Are you sure you want to delete this slide?\');">Delete Slide</a>';
                         echo '</td>';
                         echo '</tr>';
                     }
