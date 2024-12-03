@@ -80,6 +80,7 @@ class MultiSlider {
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             slider_id mediumint(9) NOT NULL,
             title VARCHAR(255),
+            slide_id VARCHAR(255),
             image_id mediumint(9) NOT NULL,
             link_url VARCHAR(255),
             description TEXT,
@@ -210,6 +211,10 @@ class MultiSlider {
                             <td><input type="text" name="slide_title"></td>
                         </tr>
                         <tr>
+                            <th><label for="slide_id">Slide ID</label></th>
+                            <td><input type="text" name="slide_id"></td>
+                        </tr>
+                        <tr>
                             <th><label for="slide_image">Slide Image</label></th>
                             <td>
                                 <input type="hidden" name="slide_image_id" id="slide_image_id">
@@ -278,6 +283,7 @@ class MultiSlider {
             $data = [
                 'slider_id' => intval($_POST['slider_id']),
                 'title' => sanitize_text_field($_POST['slide_title']),
+                'slide_id' => sanitize_text_field($_POST['slide_id']),
                 'image_id' => intval($_POST['slide_image_id']),
                 'link_url' => esc_url($_POST['slide_link']),
                 'description' => sanitize_textarea_field($_POST['slide_description']),
@@ -333,6 +339,7 @@ class MultiSlider {
                         echo '<tr class="slide-row">';
                         echo '<td colspan="5">';
                         echo '&nbsp;&nbsp;- ' . esc_html($slide->title);
+                        echo '&nbsp;&nbsp;- ' . esc_html($slide->slide_id);
                         echo $image_url 
                             ? ' <img src="' . esc_url($image_url[0]) . '" width="50">' 
                             : '';

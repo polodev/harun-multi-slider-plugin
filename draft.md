@@ -491,3 +491,4 @@ class MultiSlider {
 
 ```
 
+I have just generated using ai. but need to update this. don't work media choice/update. please give me proper file to work. in reality I don't have any js yet
