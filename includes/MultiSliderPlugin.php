@@ -81,6 +81,7 @@ class MultiSlider {
             slider_id mediumint(9) NOT NULL,
             title VARCHAR(255),
             slide_id VARCHAR(255),
+            slide_order mediumint(9) NULL,
             image_id mediumint(9) NOT NULL,
             link_url VARCHAR(255),
             description TEXT,
@@ -255,6 +256,10 @@ public function render_admin_page() {
                             <td><input type="text" name="slide_id" value="<?php echo esc_attr($slide->slide_id); ?>" required></td>
                         </tr>
                         <tr>
+                            <th><label for="slide_order">Slide Order</label></th>
+                            <td><input type="text" name="slide_order" value="<?php echo esc_attr($slide->slide_order); ?>" required></td>
+                        </tr>
+                        <tr>
                             <th><label for="slide_image">Slide Image</label></th>
                             <td>
                                 <input type="hidden" name="slide_image_id" id="slide_image_id" value="<?php echo esc_attr($slide->image_id); ?>">
@@ -312,6 +317,10 @@ public function render_admin_page() {
                         <tr>
                             <th><label for="slide_id">Slide ID</label></th>
                             <td><input type="text" name="slide_id"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="slide_order">Slide Order</label></th>
+                            <td><input type="text" name="slide_order"></td>
                         </tr>
                         <tr>
                             <th><label for="slide_image">Slide Image</label></th>
@@ -400,6 +409,7 @@ private function handle_slider_submission() {
             'slider_id' => intval($_POST['slider_id']),
             'title' => sanitize_text_field($_POST['slide_title']),
             'slide_id' => sanitize_text_field($_POST['slide_id']),
+            'slide_order' => sanitize_text_field($_POST['slide_order']),
             'image_id' => intval($_POST['slide_image_id']),
             'link_url' => esc_url($_POST['slide_link']),
             'description' => sanitize_textarea_field($_POST['slide_description']),
@@ -422,6 +432,7 @@ private function handle_slider_submission() {
             'slider_id' => intval($_POST['slider_id']),
             'title' => sanitize_text_field($_POST['slide_title']),
             'slide_id' => sanitize_text_field($_POST['slide_id']),
+            'slide_order' => sanitize_text_field($_POST['slide_order']),
             'image_id' => intval($_POST['slide_image_id']),
             'link_url' => esc_url($_POST['slide_link']),
             'description' => sanitize_textarea_field($_POST['slide_description']),
@@ -479,6 +490,7 @@ private function handle_slider_submission() {
                         echo '<td colspan="5">';
                         echo '&nbsp;&nbsp;- ' . esc_html($slide->title);
                         echo '&nbsp;&nbsp;- ' . esc_html($slide->slide_id);
+                        echo '&nbsp;&nbsp;- ' . esc_html($slide->slide_order);
                         echo $image_url 
                             ? ' <img src="' . esc_url($image_url[0]) . '" width="50">' 
                             : '';
