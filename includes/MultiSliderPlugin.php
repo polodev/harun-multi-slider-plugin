@@ -709,9 +709,20 @@ public function handle_slide_deletion() {
             '1.0.0', 
             true
         );
+        wp_enqueue_script(
+            'multi-slider-user-script', 
+            MULTI_SLIDER_PLUGIN_URL . 'assets/js/multi-slider-user.js', 
+            ['jquery'], 
+            '1.0.0', 
+            true
+        );
         wp_enqueue_style(
             'multi-slider-style', 
             MULTI_SLIDER_PLUGIN_URL . 'assets/css/multi-slider.css'
+        );
+        wp_enqueue_style(
+            'multi-slider-user-style', 
+            MULTI_SLIDER_PLUGIN_URL . 'assets/css/multi-slider-user.css'
         );
     }
 
