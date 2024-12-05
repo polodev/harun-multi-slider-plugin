@@ -668,17 +668,7 @@ public function handle_slide_deletion() {
      * Enqueue slider scripts and styles
      */
     public function enqueue_slider_scripts() {
-        wp_enqueue_script(
-            'multi-slider-script', 
-            MULTI_SLIDER_PLUGIN_URL . 'assets/js/multi-slider.js', 
-            ['jquery'], 
-            '1.0.0', 
-            true
-        );
-        wp_enqueue_style(
-            'multi-slider-style', 
-            MULTI_SLIDER_PLUGIN_URL . 'assets/css/multi-slider.css'
-        );
+        
         // Load Materialize CSS
         wp_enqueue_style(
             'materialize-css', // Handle
@@ -711,6 +701,17 @@ public function handle_slide_deletion() {
             [], // Dependencies
             'latest', // Version
             true // Load in footer
+        );
+        wp_enqueue_script(
+            'multi-slider-script', 
+            MULTI_SLIDER_PLUGIN_URL . 'assets/js/multi-slider.js', 
+            ['jquery'], 
+            '1.0.0', 
+            true
+        );
+        wp_enqueue_style(
+            'multi-slider-style', 
+            MULTI_SLIDER_PLUGIN_URL . 'assets/css/multi-slider.css'
         );
     }
 
