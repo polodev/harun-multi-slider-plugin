@@ -583,25 +583,83 @@ public function handle_slide_deletion() {
         // Start output buffering
         ob_start();
         ?>
-        <div class="multi-slider" data-slider-id="<?php echo esc_attr($atts['id']); ?>">
-            <?php foreach ($slides as $slide): 
-                $image = wp_get_attachment_image_src($slide->image_id, 'large');
-                if (!$image) continue;
-            ?>
-                <div class="slide">
-                    <a href="<?php echo esc_url($slide->link_url); ?>">
-                        <img 
-                            src="<?php echo esc_url($image[0]); ?>" 
-                            alt="<?php echo esc_attr($slide->alt_text); ?>"
-                        >
-                    </a>
-                    <div class="slide-content">
-                        <h3><?php echo esc_html($slide->title); ?></h3>
-                        <p><?php echo esc_html($slide->description); ?></p>
+        
+
+        <?php $style = 'style-1'; ?>
+
+        <?php if( $style =='style-1') : ?>
+            <div class="tenets-container">
+                <h1 class="heading-6"></h1>
+                <div class="page-container">
+                    <div class="arrow-container" id="arrowPrev">
+                        <div class="arrow">
+                            <svg height="12px" version="1.1" viewBox="0 0 9 12" width="9px">
+                                <g fill-rule="evenodd" id="Page-1" stroke="none" stroke-width="1">
+                                    <g fid="Core" transform="translate(-218.000000, -90.000000)">
+                                        <g id="chevron-left" transform="translate(218.500000, 90.000000)">
+                                            <path d="M7.4,1.4 L6,0 L-8.8817842e-16,6 L6,12 L7.4,10.6 L2.8,6 L7.4,1.4 Z" id="Shape" />
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="arrow-container right" id="arrowNext">
+                        <div class="arrow right">
+                            <svg height="12px" version="1.1" viewBox="0 0 9 12" width="9px">
+                                <g fill-rule="evenodd" id="Page-1" stroke="none" stroke-width="1">
+                                    <g fid="Core" transform="translate(-218.000000, -90.000000)">
+                                        <g id="chevron-left" transform="translate(218.500000, 90.000000)">
+                                            <path d="M7.4,1.4 L6,0 L-8.8817842e-16,6 L6,12 L7.4,10.6 L2.8,6 L7.4,1.4 Z" id="Shape" />
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="carousel center">
+                        <?php foreach ($slides as $slide): 
+                            $image = wp_get_attachment_image_src($slide->image_id, 'large');
+                            if (!$image) continue;
+                        ?>
+                        <a class="carousel-item" href="#<?php echo $slide->slide_id ?>" name="<?php echo $slide->slide_order ?>">
+                            <img src="<?php echo esc_url($image[0]); ?>" />
+                        </a>
+                        <?php endforeach;?>
                     </div>
                 </div>
-            <?php endforeach; ?>
-        </div>
+                <div class="slider-container" id="slideNav">
+                    <div class="overflow-wrapper swiper mySwiper">
+                        <div class="carousel-nav swiper-wrapper">
+
+                        <?php foreach ($slides as $slide): 
+                            $image = wp_get_attachment_image_src($slide->image_id, 'large');
+                            if (!$image) continue;
+                        ?>
+                            <div class="swiper-slide">
+                                <a href="#<?php echo $slide->slide_id ?>" name="<?php echo $slide->slide_order ?>"><?php echo $slide->title ?></a>
+                            </div>
+                        <?php endforeach;?>
+                        </div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+        <?php endif;?>
+
+
         <?php
         return ob_get_clean();
     }

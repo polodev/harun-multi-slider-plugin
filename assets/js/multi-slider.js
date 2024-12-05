@@ -1,4 +1,4 @@
-      $(document).ready(function () {
+      jQuery(document).ready(function($) {
           // Track if it's the first time setting the carousel
           let isFirstSet = true;
 
