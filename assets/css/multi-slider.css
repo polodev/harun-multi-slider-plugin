@@ -1,0 +1,345 @@
+.tenets-container {
+    position: relative;
+}
+
+.tenets-container {
+    background-color: #0d1215; /* Set the background to #0d1215 */
+    color: white; /* Optional: Ensure text is visible against the #0d1215 background */
+}
+
+.page-container {
+    position: relative;
+}
+
+.arrow-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 300px;
+    height: 100%;
+    background: rgb(13, 18, 21);
+    background: linear-gradient(90deg, rgba(13, 18, 21, 0.7959558823529411) 0%, rgba(13, 18, 21, 0.6) 80%, rgba(0, 0, 0, 0) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 80;
+    cursor: pointer;
+}
+
+.arrow-container.right {
+    left: auto;
+    right: 0;
+    background: linear-gradient(-90deg, rgba(13, 18, 21, 0.7959558823529411) 0%, rgba(13, 18, 21, 0.6) 80%, rgba(0, 0, 0, 0) 100%);
+}
+
+@media (max-width: 680px) {
+    .arrow-container {
+        background: none !important; /* Remove background for left arrow */
+        left: -2.5rem;
+    }
+
+    .arrow-container.right {
+        background: none !important; /* Remove background for right arrow */
+        right: -2.5rem;
+    }
+}
+
+.arrow {
+    width: 50px;
+    height: 50px;
+}
+
+.arrow.right {
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+
+.arrow svg {
+    width: 100%;
+    height: 100%;
+    fill: #a0a0a0;
+}
+
+.arrow-container:hover .arrow svg {
+    fill: #fff;
+}
+
+.heading-6 {
+    margin-top: 0;
+    padding-top: 50px;
+    font-size: 40px;
+}
+
+.slider-container {
+    max-width: 1050px;
+    height: 39px;
+    margin: 20px auto;
+    padding: 0 40px;
+}
+
+.carousel {
+    max-height: 600px;
+}
+
+.carousel .carousel-item {
+    width: 700px;
+    height: 100%;
+}
+
+.carousel .carousel-item img {
+    border: 2px solid #fff;
+}
+
+.carousel-nav {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    width: 100%;
+    margin-top: 20px;
+    padding-bottom: 15px;
+    position: relative;
+}
+
+.carousel-nav {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+@media (max-width: 680px) {
+    .carousel-nav > .swiper-slide > a {
+        font-size: 10px; /* Adjust font size for mobile */
+    }
+}
+
+@media (max-width: 380px) {
+    .carousel-nav > .swiper-slide > a {
+        font-size: 8px; /* Further reduce font size for very small screens */
+    }
+}
+
+.carousel-nav > .swiper-slide {
+    margin-right: 20px;
+    margin-bottom: 5px;
+}
+
+.carousel-nav > .swiper-slide > a {
+    color: #a0a0a0;
+    border-bottom: 2px solid transparent;
+}
+
+.carousel-nav > .swiper-slide > a {
+    font-size: 1.2rem; /* Set the desired font size */
+}
+
+.carousel-nav .swiper-slide a {
+    position: relative;
+    left: -2rem;
+}
+
+.carousel-nav > .swiper-slide > a.current {
+    color: #fff !important;
+    font-weight: 400;
+    border-bottom: 2px solid gold;
+}
+
+.swiper-button-prev {
+    left: 5px;
+    background-color: #0d1215;
+    color: #fff;
+    --swiper-navigation-size: 20px;
+}
+
+.swiper-button-next {
+    right: -2px;
+    background-color: #0d1215;
+    color: #fff;
+    --swiper-navigation-size: 20px;
+}
+
+.swiper-button-disabled {
+    display: none;
+}
+
+.cta-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    margin-bottom: 100px;
+}
+
+@media (max-width: 961px) {
+    .carousel {
+        max-height: 360px;
+    }
+
+    .carousel .carousel-item {
+        width: 610px;
+        height: 100%;
+    }
+
+    .arrow-container {
+        width: 100px;
+    }
+
+    .arrow {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 680px) {
+    .heading-6 {
+        margin-top: 0;
+        font-size: 32px;
+    }
+
+    .carousel {
+        max-height: 290px;
+    }
+
+    .carousel .carousel-item {
+        width: 480px;
+    }
+
+    .arrow-container {
+        width: 100px;
+    }
+
+    .arrow {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 680px) {
+    .slider-container {
+        max-width: 100%;
+        padding: 0 10px; /* Adjust padding for mobile view */
+    }
+
+    .carousel {
+        max-height: 250px; /* Reduce the height of the carousel */
+    }
+
+    .carousel .carousel-item {
+        width: 50%; /* Reduce width for mobile view */
+    }
+
+    .arrow {
+        width: 25px;
+        height: 25px;
+    }
+
+    .arrow svg {
+        width: 100%;
+        height: 100%;
+        fill: white;
+    }
+
+    .carousel-nav > .swiper-slide > a {
+        font-size: 1rem; /* Set the desired font size */
+    }
+
+    .carousel-nav .swiper-slide a {
+        position: relative;
+        left: -2rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .slider-container {
+        max-width: 95%;
+        padding: 0 10px;
+    }
+
+    .carousel {
+        max-height: 350px;
+    }
+
+    .carousel .carousel-item {
+        width: 96%;
+    }
+
+    .arrow-container {
+        background: none !important; /* Remove background for left arrow */
+        left: -2.5rem;
+        top: -2rem;
+    }
+
+    .arrow-container.right {
+        background: none !important; /* Remove background for right arrow */
+        right: -2.5rem;
+        top: -2rem;
+    }
+
+    .slider-container {
+        margin: -2rem auto;
+        padding: 0 0px;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+    .slider-container {
+        max-width: 100%;
+    }
+
+    .carousel {
+        max-height: 300px;
+    }
+
+    .carousel .carousel-item {
+        width: 97%;
+    }
+
+    .arrow-container {
+        background: none !important; /* Remove background for left arrow */
+        left: -2.5rem;
+        top: -2rem;
+    }
+
+    .arrow-container.right {
+        background: none !important; /* Remove background for right arrow */
+        right: -2.5rem;
+        top: -2rem;
+    }
+
+    .slider-container {
+        margin: -3.5rem auto;
+        padding: 0 0px;
+    }
+}
+
+@media (max-width: 575px) {
+    .slider-container {
+        max-width: 100%;
+    }
+
+    .carousel {
+        max-height: 250px;
+    }
+
+    .carousel .carousel-item {
+        width: 96%;
+    }
+
+    .arrow-container {
+        background: none !important; /* Remove background for left arrow */
+        left: -2.5rem;
+        top: -2rem;
+    }
+
+    .arrow-container.right {
+        background: none !important; /* Remove background for right arrow */
+        right: -2.5rem;
+        top: -2rem;
+    }
+
+    .slider-container {
+        margin: -3.5rem auto;
+        padding: 0 0px;
+    }
+}

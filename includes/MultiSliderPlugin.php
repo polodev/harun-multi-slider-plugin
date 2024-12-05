@@ -30,7 +30,7 @@ class MultiSlider {
         add_action('admin_menu', [$this, 'add_admin_menu']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
         add_shortcode('multi_slider', [$this, 'render_slider_shortcode']);
-        // add_action('wp_enqueue_scripts', [$this, 'enqueue_slider_scripts']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_slider_scripts']);
         
         // AJAX handlers
         add_action('wp_ajax_multi_slider_upload_image', [$this, 'handle_image_upload']);
@@ -612,14 +612,47 @@ public function handle_slide_deletion() {
     public function enqueue_slider_scripts() {
         wp_enqueue_script(
             'multi-slider-script', 
-            MULTI_SLIDER_PLUGIN_URL . 'assets/multi-slider.js', 
+            MULTI_SLIDER_PLUGIN_URL . 'assets/js/multi-slider.js', 
             ['jquery'], 
             '1.0.0', 
             true
         );
         wp_enqueue_style(
             'multi-slider-style', 
-            MULTI_SLIDER_PLUGIN_URL . 'assets/multi-slider.css'
+            MULTI_SLIDER_PLUGIN_URL . 'assets/css/multi-slider.css'
+        );
+        // Load Materialize CSS
+        wp_enqueue_style(
+            'materialize-css', // Handle
+            'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css', // Source
+            [], // Dependencies
+            '1.0.0' // Version
+        );
+
+        // Load Swiper CSS
+        wp_enqueue_style(
+            'swiper-css', // Handle
+            'https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css', // Source
+            [], // Dependencies
+            'latest' // Version
+        );
+
+        // Load Materialize JS
+        wp_enqueue_script(
+            'materialize-js', // Handle
+            'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js', // Source
+            ['jquery'], // Dependencies
+            '1.0.0', // Version
+            true // Load in footer
+        );
+
+        // Load Swiper JS
+        wp_enqueue_script(
+            'swiper-js', // Handle
+            'https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js', // Source
+            [], // Dependencies
+            'latest', // Version
+            true // Load in footer
         );
     }
 
