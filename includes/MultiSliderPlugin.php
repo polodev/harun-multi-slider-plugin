@@ -70,7 +70,10 @@ class MultiSlider {
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             title VARCHAR(255) NOT NULL,
             slug VARCHAR(100) NOT NULL UNIQUE,
-            description TEXT,
+            description TEXT NULL,
+            slider_style VARCHAR(255) NULL,
+            button_text VARCHAR(255) NULL,
+            button_url VARCHAR(255) NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY  (id)
         ) $charset_collate;";
@@ -95,6 +98,13 @@ class MultiSlider {
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sliders_sql);
         dbDelta($slides_sql);
+    }
+    public static function getSliderStyles()
+    {
+        return [
+            'style_1',
+            'style_2',
+        ];
     }
 
     /**
@@ -186,8 +196,28 @@ public function render_admin_page() {
                             <td><input type="text" name="slider_slug" value="<?php echo esc_attr($slider->slug); ?>" required></td>
                         </tr>
                         <tr>
+                            <th><label for="slider_style">Slider Style</label></th>
+                            <td>
+                                <select name="slider_style" id="slider_style">
+                                    <?php foreach (self::getSliderStyles() as $key): ?>
+                                        <option <?php $key == $slider->slider_style ? 'selected' : null ?>  value="<?php echo $key; ?>"><?php echo $key; ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
                             <th><label for="slider_description">Description</label></th>
                             <td><textarea name="slider_description"><?php echo esc_textarea($slider->description); ?></textarea></td>
+                        </tr>
+
+                        <tr>
+                            <th><label for="button_text">Button Text</label></th>
+                            <td><input type="text" name="button_text" value="<?php echo esc_attr($slider->button_text); ?>"></td>
+                        </tr>
+
+                        <tr>
+                            <th><label for="button_url">Button URL</label></th>
+                            <td><input type="text" name="button_url" value="<?php echo esc_attr($slider->button_url); ?>"></td>
                         </tr>
                     </table>
 
@@ -209,11 +239,29 @@ public function render_admin_page() {
                         </tr>
                         <tr>
                             <th><label for="slider_slug">Slider Slug</label></th>
-                            <td><input type="text" name="slider_slug" required placeholder="unique-identifier"></td>
+                            <td><input type="text" name="slider_slug" value="" required></td>
+                        </tr>
+                        <tr>
+                            <th><label for="slider_style">Slider Style</label></th>
+                            <td>
+                                <select name="slider_style" id="slider_style">
+                                    <?php foreach (self::getSliderStyles() as $key): ?>
+                                        <option value="<?php echo $key; ?>"><?php echo $key; ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                            </td>
                         </tr>
                         <tr>
                             <th><label for="slider_description">Description</label></th>
                             <td><textarea name="slider_description"></textarea></td>
+                        </tr>
+                        <tr>
+                            <th><label for="button_text">Button Text</label></th>
+                            <td><input type="text" name="button_text" value=""></td>
+                        </tr>
+                        <tr>
+                            <th><label for="button_url">Button URL</label></th>
+                            <td><input type="text" name="button_url" value=""></td>
                         </tr>
                     </table>
 
@@ -370,7 +418,10 @@ private function handle_slider_submission() {
         $data = [
             'title' => sanitize_text_field($_POST['slider_title']),
             'slug' => sanitize_title($_POST['slider_slug']),
-            'description' => sanitize_textarea_field($_POST['slider_description'])
+            'slider_style' => sanitize_title($_POST['slider_style']),
+            'description' => sanitize_textarea_field($_POST['slider_description']),
+            'button_text' => sanitize_title($_POST['button_text']),
+            'button_url' => sanitize_url($_POST['button_url']),
         ];
         $wpdb->insert($this->sliders_table, $data);
     }
@@ -386,6 +437,9 @@ private function handle_slider_submission() {
         $data = [
             'title' => sanitize_text_field($_POST['slider_title']),
             'slug' => sanitize_title($_POST['slider_slug']),
+            'slider_style' => sanitize_title($_POST['slider_style']),
+            'button_text' => sanitize_title($_POST['button_text']),
+            'button_url' => sanitize_url($_POST['button_url']),
             'description' => sanitize_textarea_field($_POST['slider_description'])
         ];
         $wpdb->update($this->sliders_table, $data, ['id' => $slider_id]);
